@@ -1,14 +1,17 @@
 ﻿using BikeRentalApp.Application.DTOs;
 using BikeRentalApp.Application.Interfaces;
 using BikeRentalApp.Domain.Entities;
+using BikeRentalApp.Domain.Events;
 using BikeRentalApp.Domain.Interfaces;
 
 namespace BikeRentalApp.Application.Services {
     public class MotoService : IMotoService {
         private readonly IMotoRepository _motoRepository;
+        private readonly IEventPublisher _eventPublisher;
 
-        public MotoService(IMotoRepository motoRepository) {
+        public MotoService(IMotoRepository motoRepository, IEventPublisher eventPublisher) {
             _motoRepository = motoRepository;
+            _eventPublisher = eventPublisher;
         }
 
         public async Task<MotoDto> CreateAsync(CreateMotoDto createDto) {
@@ -24,6 +27,15 @@ namespace BikeRentalApp.Application.Services {
             };
 
             await _motoRepository.AddAsync(moto);
+
+            var motoEvent = new MotoCreatedEvent {
+                Identificador = moto.Identificador,
+                Ano = moto.Ano,
+                Modelo = moto.Modelo,
+                Placa = moto.Placa
+            };
+
+            await _eventPublisher.PublishAsync("moto.created", motoEvent);
 
             return new MotoDto {
                 Identificador = moto.Identificador,
@@ -46,7 +58,7 @@ namespace BikeRentalApp.Application.Services {
         public async Task<MotoDto> GetByIdAsync(string id) {
             var moto = await _motoRepository.GetByIdAsync(id);
             if (moto == null) {
-                throw new Exception("Moto não encontrada.");
+                throw new Exception("Moto não encontrada");
             }
 
             return new MotoDto {

@@ -22,12 +22,13 @@ namespace BikeRentalApp.Api.Controllers {
         public async Task<IActionResult> GetById(string id) {
             try {
                 var moto = await _motoService.GetByIdAsync(id);
-                if (moto == null) {
-                    return NotFound(new { mensagem = "Moto não encontrada" });
-                }
+               
                 return Ok(moto);
             }
-            catch(Exception) {
+            catch(Exception ex) {
+                if (ex.Message.Equals("Moto não encontrada")) {
+                    return NotFound(new { mensagem = ex.Message });
+                }
                 return BadRequest(new { mensagem = "Request mal formada" });
             }
         }
