@@ -1,5 +1,5 @@
 ﻿namespace BikeRentalApp.Application.DTOs {
-    public class UpdateMotoPlacaDto {
+    public class MotoUpdatePlacaDto {
         public string Placa { get; set; }
     }
 }

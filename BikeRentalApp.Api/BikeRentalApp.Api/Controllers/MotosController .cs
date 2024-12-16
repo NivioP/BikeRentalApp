@@ -34,7 +34,7 @@ namespace BikeRentalApp.Api.Controllers {
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateMotoDto createDto) {
+        public async Task<IActionResult> Create([FromBody] MotoCreateDto createDto) {
             try {
                 var moto = await _motoService.CreateAsync(createDto);
                 return StatusCode(201);
@@ -45,7 +45,7 @@ namespace BikeRentalApp.Api.Controllers {
         }
 
         [HttpPut("{id}/placa")]
-        public async Task<IActionResult> Update(string id, [FromBody] UpdateMotoPlacaDto updateDto) {
+        public async Task<IActionResult> Update(string id, [FromBody] MotoUpdatePlacaDto updateDto) {
             try {
                 await _motoService.UpdateAsync(id, updateDto);
                 return Ok(new { mensagem = "Placa modificada com sucesso" });

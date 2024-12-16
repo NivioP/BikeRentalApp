@@ -27,6 +27,8 @@ namespace BikeRentalAPI {
             // Register repository and service
             builder.Services.AddScoped<IMotoRepository, MotoRepository>();
             builder.Services.AddScoped<IMotoService, MotoService>();
+            builder.Services.AddScoped<IEntregadorRepository, EntregadorRepository>();
+            builder.Services.AddScoped<IEntregadorService, EntregadorService>();
 
             // Configure messaging system
             builder.Services.AddSingleton<RabbitMqConnection>();
@@ -36,6 +38,10 @@ namespace BikeRentalAPI {
             // Configure MongoDB settings
             builder.Services.Configure<MongoSettings>(builder.Configuration.GetSection("MongoSettings"));
             builder.Services.AddScoped<IMongoNotificationRepository, MongoNotificationRepository>();
+
+            // Configure Amazon s3settings
+            builder.Services.AddScoped<S3Service>();
+
 
             // Add hosted service for notification consumer
             builder.Services.AddHostedService<NotificationConsumer>();

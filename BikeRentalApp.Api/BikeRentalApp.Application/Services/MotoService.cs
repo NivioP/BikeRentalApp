@@ -14,9 +14,13 @@ namespace BikeRentalApp.Application.Services {
             _eventPublisher = eventPublisher;
         }
 
-        public async Task<MotoDto> CreateAsync(CreateMotoDto createDto) {
+        public async Task<MotoDto> CreateAsync(MotoCreateDto createDto) {
             if (await _motoRepository.PlacaExistsAsync(createDto.Placa)) {
-                throw new Exception("Placa já registrada.");
+                throw new Exception("This Placa is already registered");
+            }
+
+            if ((await _motoRepository.GetByIdAsync(createDto.Identificador)) != null) {
+                throw new Exception("This Identificador is already registered");
             }
 
             var moto = new Moto {
@@ -69,7 +73,7 @@ namespace BikeRentalApp.Application.Services {
             };
         }
 
-        public async Task UpdateAsync(string id, UpdateMotoPlacaDto updateDto) {
+        public async Task UpdateAsync(string id, MotoUpdatePlacaDto updateDto) {
             var moto = await _motoRepository.GetByIdAsync(id);
             if (moto == null) {
                 throw new Exception("Moto not found.");
