@@ -13,8 +13,8 @@ namespace BikeRentalApp.Api.Controllers {
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll() {
-            var motos = await _motoService.GetAllAsync();
+        public async Task<IActionResult> GetAll([FromQuery] string? placa) {
+            var motos = await _motoService.GetAllAsync(placa);
             return Ok(motos);
         }
 
@@ -36,7 +36,7 @@ namespace BikeRentalApp.Api.Controllers {
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] MotoCreateDto createDto) {
             try {
-                var moto = await _motoService.CreateAsync(createDto);
+                await _motoService.CreateAsync(createDto);
                 return StatusCode(201);
             }
             catch(Exception) {

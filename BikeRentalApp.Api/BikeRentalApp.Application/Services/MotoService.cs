@@ -14,13 +14,13 @@ namespace BikeRentalApp.Application.Services {
             _eventPublisher = eventPublisher;
         }
 
-        public async Task<MotoDto> CreateAsync(MotoCreateDto createDto) {
+        public async Task CreateAsync(MotoCreateDto createDto) {
             if (await _motoRepository.PlacaExistsAsync(createDto.Placa)) {
-                throw new Exception("This Placa is already registered");
+                throw new Exception("Essa placa já está registrada.");
             }
 
             if ((await _motoRepository.GetByIdAsync(createDto.Identificador)) != null) {
-                throw new Exception("This Identificador is already registered");
+                throw new Exception("Esse Identificador já está registrado.");
             }
 
             var moto = new Moto {
@@ -40,17 +40,15 @@ namespace BikeRentalApp.Application.Services {
             };
 
             await _eventPublisher.PublishAsync("moto.created", motoEvent);
-
-            return new MotoDto {
-                Identificador = moto.Identificador,
-                Ano = moto.Ano,
-                Modelo = moto.Modelo,
-                Placa = moto.Placa
-            };
         }
 
-        public async Task<IEnumerable<MotoDto>> GetAllAsync() {
+        public async Task<IEnumerable<MotoDto>> GetAllAsync(string? placa) {
             var motos = await _motoRepository.GetAllAsync();
+
+            if (!string.IsNullOrEmpty(placa)) {
+                motos = motos.Where(m => m.Placa.Equals(placa, StringComparison.OrdinalIgnoreCase));
+            }
+
             return motos.Select(m => new MotoDto {
                 Identificador = m.Identificador,
                 Ano = m.Ano,
@@ -62,7 +60,7 @@ namespace BikeRentalApp.Application.Services {
         public async Task<MotoDto> GetByIdAsync(string id) {
             var moto = await _motoRepository.GetByIdAsync(id);
             if (moto == null) {
-                throw new Exception("Moto não encontrada");
+                throw new Exception("Moto não encontrada.");
             }
 
             return new MotoDto {
@@ -76,7 +74,7 @@ namespace BikeRentalApp.Application.Services {
         public async Task UpdatePlacaAsync(string id, MotoUpdatePlacaDto updateDto) {
             var moto = await _motoRepository.GetByIdAsync(id);
             if (moto == null) {
-                throw new Exception("Moto not found.");
+                throw new Exception("Moto não encontrada.");
             }
 
             moto.Placa = updateDto.Placa;
