@@ -14,6 +14,7 @@ namespace BikeRentalAPI {
             // Add services to the container.
             builder.Services.AddControllers();
 
+
             // Configure Swagger/OpenAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -60,6 +61,11 @@ namespace BikeRentalAPI {
             if (app.Environment.IsDevelopment()) {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+            }
+
+            using (var scope = app.Services.CreateScope()) {
+                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                dbContext.Database.Migrate(); // Aplica as migrations automaticamente
             }
 
             app.UseHttpsRedirection();

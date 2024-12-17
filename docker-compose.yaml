@@ -20,6 +20,7 @@ services:
       MongoSettings__ConnectionString: "mongodb://mongo:27017/"
     depends_on:
       - rabbitmq
+    restart: on-failure
   postgres:
     image: postgres:15
     container_name: postgres
