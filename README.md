@@ -191,4 +191,4 @@ Para dúvidas ou sugestões, entre em contato:
 
 - **Nome**: Nivio Polizzi Limongi
 - **Email**: limongi.nivio@gmail.com
-- **LinkedIn**: [Seu LinkedIn](https://www.linkedin.com/nivio)
+- **LinkedIn**: [LinkedIn/nivio](https://www.linkedin.com/nivio)
