@@ -2,159 +2,193 @@
 
 ## Sumário
 
-- [Visão Geral](#visão-geral)
-- [Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [Requisitos de Instalação](#requisitos-de-instalação)
-- [Configuração da Aplicação](#configuração-da-aplicação)
-- [Rodando a Aplicação Localmente](#rodando-a-aplicação-localmente)
-- [Acessando a Aplicação no Docker](#acessando-a-aplicação-no-docker)
-- [Conexão com Amazon S3](#conexão-com-amazon-s3)
-- [Conexão com RabbitMQ](#conexão-com-rabbitmq)
+1. [Visão Geral](#visão-geral)
+2. [Tecnologias Utilizadas](#tecnologias-utilizadas)
+3. [Requisitos de Instalação](#requisitos-de-instalação)
+4. [Configuração da Aplicação](#configuração-da-aplicação)
+5. [Rodando a Aplicação Localmente](#rodando-a-aplicação-localmente)
+6. [Rodando a Aplicação com Docker](#rodando-a-aplicação-com-docker)
+7. [Configurações de Serviços Externos](#configurações-de-serviços-externos)
+   - [Amazon S3](#amazon-s3)
+   - [RabbitMQ](#rabbitmq)
+8. [Documentação da API](#documentação-da-api)
+9. [Contato](#contato)
 
+---
 
 ## Visão Geral
 
-A **Bike Rental Application** é uma plataforma para gerenciar o aluguel de motos. A aplicação permite que entregadores aluguem motos, enviem fotos de suas CNHs, acompanhem o status da locação, atualizem a data de devolução e consultem o valor total da locação. A arquitetura é modular, utilizando tecnologias modernas como Docker, PostgreSQL, RabbitMQ, Amazon S3 e .NET 8.
+A **Bike Rental Application** é uma solução desenvolvida em **.NET 8** para gerenciar o aluguel de motos. A aplicação oferece funcionalidades como:
+
+- Cadastro e gerenciamento de motos.
+- Locacao de motos por entregadores.
+- Upload de fotos da CNH.
+- Acompanhamento do status do aluguel.
+- Atualização da data de devolução e cálculo do valor total da locação.
+
+A aplicação é **modular**, escalável e utiliza tecnologias modernas para garantir desempenho e confiabilidade.
+
+---
 
 ## Tecnologias Utilizadas
 
 - **Backend**:
-  - **.NET 8**: Plataforma para o desenvolvimento backend, oferecendo suporte robusto para APIs RESTful.
-  - **PostgreSQL**: Banco de dados relacional para armazenar dados de locações, entregadores, motos e outros metadados.
-  - **RabbitMQ**: Servidor de mensagens para comunicação entre serviços, utilizado para publicação e consumo de eventos.
-  - **Amazon S3**: Serviço de armazenamento para fotos de CNHs, garantindo escalabilidade e segurança.
-  - **Docker**: Para criar contêineres da aplicação, facilitando o deploy e a execução em diferentes ambientes.
-  - **Swagger/OpenAPI**: Documentação automática para a API da aplicação.
+  - [.NET 8](https://dotnet.microsoft.com/) - Framework principal para desenvolvimento da API.
+  - [PostgreSQL](https://www.postgresql.org/) - Banco de dados relacional.
+  - [RabbitMQ](https://www.rabbitmq.com/) - Sistema de mensageria para comunicação assíncrona.
+  - [Amazon S3](https://aws.amazon.com/s3/) - Armazenamento de arquivos e imagens.
+  - [Docker](https://www.docker.com/) - Contêineres para implantação consistente.
+  - [Swagger/OpenAPI](https://swagger.io/) - Documentação da API.
 
 - **Ferramentas de Desenvolvimento**:
-  - **Visual Studio** (ou equivalente para desenvolvimento .NET)
-  - **Docker**: Para gerenciar contêineres e ambientes isolados
-  - **Postman** ou **Insomnia**: Para testes da API
+  - Visual Studio ou VS Code.
+  - Docker CLI / Docker Desktop.
+  - Postman ou Insomnia para testes da API.
+
+---
 
 ## Requisitos de Instalação
 
-1. **Ambiente de Desenvolvimento**:
-   - **Visual Studio 2022** ou qualquer editor de código compatível com .NET 8
-   - **Docker** instalado na máquina (Windows, macOS ou Linux)
-   - **Docker Compose** instalado e configurado para suportar Dockerfiles
+### Pré-requisitos
+1. **Docker e Docker Compose** instalados na máquina.
+   - [Instalar Docker](https://docs.docker.com/get-docker/)
+   - [Instalar Docker Compose](https://docs.docker.com/compose/install/)
+2. **.NET SDK 8.0** - Para executar o projeto localmente.
+   - [Download .NET SDK](https://dotnet.microsoft.com/download)
+3. **AWS S3 Access Key e Secret Key** (para upload de arquivos).
 
-2. **Dependências**:
-   - **AWS Access Key**: Usado para acessar o Amazon S3
-   - **Secret Key**: Para autenticação no Amazon S3
-   - **Bucket Name** e **Region**: Detalhes necessários para se conectar ao Amazon S3
-
-3. **Credenciais do RabbitMQ**:
-   - **Host**: localhost
-   - **Porta**: 5672
-   - **Usuário**: guest
-   - **Senha**: guest
+---
 
 ## Configuração da Aplicação
 
-1. **Configurações de Ambiente**:
-      - Clone o repositório:
-        ```
-        git clone https://github.com/NivioP/BikeRentalApp
-        ```
-     
-   - Crie um arquivo `.env` na raiz do projeto e adicione as seguintes variáveis:
-        ```
-        AWS_AccessKeyId=<Your AWS Access Key>
-        AWS_SecretAccessKey=<Your AWS Secret Key>
-        AWS_BucketName=<Your S3 Bucket Name>
-        AWS_Region=<Your AWS Region>
-        ASPNETCORE_ENVIRONMENT=Development
-        ```
+1. **Clone o repositório**:
+   ```bash
+   git clone https://github.com/NivioP/BikeRentalApp
+   cd BikeRentalApp
+   ```
 
-2. **Configurações do PostgreSQL**:
-   - Adicione a string de conexão no arquivo `appsettings.json`:
+2. **Configurações de ambiente**:
+   Atualize o `appsettings.json` com as credenciais corretas:
+
+   - **PostgreSQL**:
      ```json
      "ConnectionStrings": {
-         "PostgreSQL": "Host=localhost;Port=5432;Database=BikeRentalDB;Username=postgres;Password=yourpassword"
+       "PostgreSQL": "Host=postgres;Port=5432;Database=appdb;Username=postgres;Password=yourpassword"
      }
      ```
 
-3. **Configurações do RabbitMQ**:
-   - No arquivo `appsettings.json`, adicione as configurações de conexão com o RabbitMQ:
+   - **RabbitMQ**:
      ```json
-     "RabbitMq": {
-         "HostName": "localhost",
-         "Port": 5672,
-         "UserName": "guest",
-         "Password": "guest"
+     "RabbitMQ": {
+       "HostName": "rabbitmq",
+       "Port": 5672,
+       "UserName": "admin",
+       "Password": "admin"
      }
      ```
 
-4. **Configurações do Amazon S3**:
-   - No arquivo `appsettings.json`, defina as configurações do S3:
+   - **Amazon S3**:
      ```json
      "AWS": {
-         "AccessKeyId": "<Your AWS Access Key>",
-         "SecretAccessKey": "<Your AWS Secret Key>",
-         "Region": "<Your AWS Region>",
-         "BucketName": "<Your S3 Bucket Name>"
+       "AccessKey": "your-access-key",
+       "SecretKey": "your-secret-key",
+       "Region": "your-region",
+       "BucketName": "your-bucket-name"
      }
      ```
+
+---
 
 ## Rodando a Aplicação Localmente
 
-1. **Passo 1: Instalação das Dependências**:
-   - Certifique-se de ter o Docker e Docker Compose instalados.
-   - Instale todas as dependências da aplicação usando o NuGet. Abra o prompt do Visual Studio ou o terminal e navegue até o diretório do projeto.
-   - Execute o comando:
-     ```bash
-     dotnet restore
-     ```
+### 1. Restaurar pacotes NuGet
+Execute o comando para restaurar as dependências:
+```bash
+dotnet restore
+```
 
-2. **Passo 2: Configuração do banco de dados**:
-   - Execute as migrações do banco de dados:
-     ```bash
-     dotnet ef database update
-     ```
+### 2. Aplicar migrations no banco de dados
+Antes de rodar a aplicação, garanta que o banco PostgreSQL tenha as tabelas criadas:
+```bash
+dotnet ef database update
+```
 
-3. **Passo 3: Compilar e rodar a aplicação**:
-   - No Visual Studio, selecione o perfil `http` ou `https` e pressione `Ctrl+F5` para compilar e executar a aplicação.
-   - No terminal, navegue até o diretório do projeto e execute:
-     ```bash
-     dotnet run --profile http
-     ```
+### 3. Executar a aplicação
+No terminal ou no Visual Studio, execute:
+```bash
+dotnet run
+```
 
-4. **Passo 4: Acessar a API**:
-   - Abra um navegador e acesse `http://localhost:5167` ou `https://localhost:7280` para acessar a documentação da API Swagger.
+A aplicação estará disponível em:
+- **Swagger UI**: `http://localhost:8080/swagger`
 
-## Acessando a Aplicação no Docker
+---
 
-1. **Passo 1: Build do Dockerfile**:
-   - Navegue até o diretório raiz do projeto onde o `Dockerfile` está localizado.
-   - Execute o comando para criar o contêiner:
-     ```bash
-     docker build -t bike-rental-app .
-     ```
+## Rodando a Aplicação com Docker
 
-2. **Passo 2: Executar o contêiner Docker**:
-   - Crie e execute o contêiner usando Docker Compose:
-     ```bash
-     docker-compose up --build
-     ```
+### 1. Criar e rodar os contêineres
+No diretório raiz do projeto, execute:
+```bash
+docker-compose up --build
+```
 
-3. **Passo 3: Acessar a API**:
-   - Abra um navegador e acesse `http://localhost:5167` ou `https://localhost:8081` para acessar a documentação da API Swagger.
+Os serviços rodarão em:
+- **API**: `http://localhost:8080` ou `http://localhost:8081`
+- **RabbitMQ**: `http://localhost:15672` (usuário: `admin` | senha: `admin`)
+- **PostgreSQL**: Porta `5432`
+- **MongoDB**: Porta `27017`
+- **MinIO (S3)**: `http://localhost:9000` (console em `http://localhost:9001`)
 
-## Conexão com Amazon S3
+---
 
-Para armazenar as imagens da CNH, a aplicação utiliza o Amazon S3. As configurações necessárias são definidas no arquivo `appsettings.json`. A conexão é estabelecida com base nas credenciais fornecidas (AccessKey, SecretAccessKey, BucketName, Region).
+## Configurações de Serviços Externos
 
-### Verificar o serviço:
-- **Verifique o upload e obtenção da URL da imagem CNH**:
-  - Utilize a API POST `/entregadores/{id}/cnh` para enviar a foto CNH.
-  - A imagem será salva no S3 com o nome único gerado automaticamente.
+### Amazon S3
+A aplicação utiliza o S3 para armazenar arquivos de imagem (CNH). Certifique-se de que:
 
-## Conexão com RabbitMQ
+- Você possui uma conta na AWS.
+- O bucket está criado.
+- AccessKey e SecretKey estão configurados no `appsettings.json`.
 
-Para comunicação entre serviços, a aplicação utiliza o RabbitMQ. As configurações necessárias são definidas no arquivo `appsettings.json`.
+### RabbitMQ
+RabbitMQ é utilizado para a comunicação assíncrona na aplicação.
 
-### Verificar o serviço:
-- **Enfileirar e consumir mensagens**:
-  - Utilize o serviço de enfileiramento de eventos para publicações e consumos de mensagens.
-  
+- Painel de controle: `http://localhost:15672`
+- **Usuário**: `admin`
+- **Senha**: `admin`
 
+---
+
+## Documentação da API
+
+A documentação da API é gerada automaticamente pelo Swagger.
+
+- **Acesso**:
+  - Local: `http://localhost:8080/swagger`
+  - Docker: `http://localhost:8081/swagger`
+
+### Endpoints Principais:
+1. **Cadastro e gerenciamento de motos**:
+   - `POST /api/motos`
+   - `GET /api/motos`
+   - `GET /api/motos/{id}`
+   - `PUT /api/motos/{id}/placa`
+   - `DELETE /api/motos/{id}`
+
+2. **Gerenciamento de Entregadores**:
+   - `POST /api/entregadores/`
+   - `POST /api/entregadores/{id}/cnh`
+
+3. **Gestão de locações**:
+   - `POST /api/locacao`
+   - `GET /api/locacao/{id}`
+   - `PUT /api/locacao/{id}/devolucao`
+
+---
+## Contato
+
+Para dúvidas ou sugestões, entre em contato:
+
+- **Nome**: [Seu Nome]
+- **Email**: [limongi.nivio@gmail.com]
+- **LinkedIn**: [Seu LinkedIn](https://www.linkedin.com/nivio)
