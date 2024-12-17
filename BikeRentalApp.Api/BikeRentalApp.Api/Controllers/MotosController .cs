@@ -19,7 +19,7 @@ namespace BikeRentalApp.Api.Controllers {
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(string id) {
+        public async Task<IActionResult> GetById([FromRoute] string id) {
             try {
                 var moto = await _motoService.GetByIdAsync(id);
                
@@ -45,7 +45,7 @@ namespace BikeRentalApp.Api.Controllers {
         }
 
         [HttpPut("{id}/placa")]
-        public async Task<IActionResult> Update(string id, [FromBody] MotoUpdatePlacaDto updateDto) {
+        public async Task<IActionResult> Update([FromRoute] string id, [FromBody] MotoUpdatePlacaDto updateDto) {
             try {
                 await _motoService.UpdatePlacaAsync(id, updateDto);
                 return Ok(new { mensagem = "Placa modificada com sucesso" });
@@ -56,7 +56,7 @@ namespace BikeRentalApp.Api.Controllers {
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id) {
+        public async Task<IActionResult> Delete([FromRoute] string id) {
             try {
                 await _motoService.DeleteAsync(id);
                 return Ok();

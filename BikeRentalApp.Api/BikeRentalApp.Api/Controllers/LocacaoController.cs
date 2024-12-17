@@ -26,7 +26,7 @@ namespace BikeRentalApp.Api.Controllers {
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetLocacao(string id) {
+        public async Task<IActionResult> GetLocacao([FromRoute] string id) {
             try {
                 var locacao = await _locacaoService.GetByIdAsync(id);
                 if (locacao == null)
@@ -40,7 +40,7 @@ namespace BikeRentalApp.Api.Controllers {
         }
 
         [HttpPut("{id}/devolucao")]
-        public async Task<IActionResult> UpdateDevolucaoAsync(string id, LocacaoDevolucaoUpdateDto dto) {
+        public async Task<IActionResult> UpdateDevolucaoAsync([FromRoute] string id, LocacaoDevolucaoUpdateDto dto) {
             try {
                 var totalValue = await _locacaoService.UpdateDevolucaoAsync(id, dto);
                 return Ok(new { mensagem = $"Data de devolução informada com sucesso. Valor total da locação R${totalValue}" });

@@ -21,6 +21,11 @@ namespace BikeRentalApp.Infrastructure.Repositories {
             return await _context.Entregadores.FindAsync(id);
         }
 
+        public async Task UpdateAsync(Entregador entregador) {
+            _context.Entregadores.Update(entregador);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<bool> NumeroCNHExistsAsync(string numeroCnh) {
             return await _context.Entregadores
                 .AnyAsync(e => e.Numero_CNH == numeroCnh);

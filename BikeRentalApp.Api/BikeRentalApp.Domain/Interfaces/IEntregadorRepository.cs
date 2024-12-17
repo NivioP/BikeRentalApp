@@ -5,5 +5,6 @@ namespace BikeRentalApp.Domain.Interfaces {
         Task AddAsync(Entregador entregador);
         Task<Entregador?> GetByIdAsync(string id);
         Task<bool> NumeroCNHExistsAsync(string numeroCnh);
+        Task UpdateAsync(Entregador entregador);
     }
 }

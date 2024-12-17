@@ -42,7 +42,7 @@ namespace BikeRentalAPI {
             builder.Services.AddScoped<IMongoNotificationRepository, MongoNotificationRepository>();
 
             // Configure Amazon s3settings
-            builder.Services.AddScoped<S3Service>();
+            builder.Services.AddScoped<IS3Service, S3Service>();
 
 
             // Add hosted service for notification consumer

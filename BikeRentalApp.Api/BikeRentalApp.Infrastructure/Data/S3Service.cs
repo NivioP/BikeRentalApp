@@ -1,9 +1,10 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
+using BikeRentalApp.Application.Interfaces;
 using Microsoft.Extensions.Configuration;
 
 namespace BikeRentalApp.Infrastructure.Data {
-    public class S3Service {
+    public class S3Service : IS3Service {
         private readonly AmazonS3Client _s3Client;
         private readonly string _bucketName;
 
@@ -15,7 +16,7 @@ namespace BikeRentalApp.Infrastructure.Data {
         public async Task UploadFileAsync(string fileName, Stream fileStream, string path) {
             var putRequest = new PutObjectRequest {
                 BucketName = _bucketName,
-                Key = Path.Combine(path, fileName),
+                Key = $"{path.TrimEnd('/')}/{fileName}",
                 InputStream = fileStream,
                 ContentType = "image/" + GetImageExtension(fileName)
             };
