@@ -1,0 +1,66 @@
+version: '3.9'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+      - rabbitmq
+      - mongo
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=appdb;Username=postgres;Password=postgres"
+      RabbitMQ__HostName: "rabbitmq"
+      S3__AccessKey: "<YOUR_ACCESS_KEY>"
+      S3__SecretKey: "<YOUR_SECRET_KEY>"
+      S3__BucketName: "<YOUR_BUCKET_NAME>"
+      S3__Region: "<YOUR_REGION>"
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: appdb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    volumes:
+      - mongo_data:/data/db
+  minio:
+    image: minio/minio
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: "<YOUR_ACCESS_KEY>"
+      MINIO_ROOT_PASSWORD: "<YOUR_SECRET_KEY>"
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+volumes:
+  postgres_data:
+  mongo_data:
+  minio_data:
