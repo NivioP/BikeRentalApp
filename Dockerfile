@@ -14,13 +14,14 @@ COPY BikeRentalApp.Api/BikeRentalApp.Application ./BikeRentalApp.Application
 COPY BikeRentalApp.Api/BikeRentalApp.Domain ./BikeRentalApp.Domain
 COPY BikeRentalApp.Api/BikeRentalApp.Infrastructure ./BikeRentalApp.Infrastructure
 
-RUN dotnet publish ./BikeRentalApp.Api/BikeRentalApp.Api.csproj -c Release -o /app --no-restore -warnaserror:0
+RUN dotnet publish ./BikeRentalApp.Api/BikeRentalApp.Api.csproj -c Release -o /app 
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 
 COPY --from=build /app .
 
-EXPOSE 80
+EXPOSE 8080
+EXPOSE 8081
 
 ENTRYPOINT ["dotnet", "BikeRentalApp.Api.dll"]

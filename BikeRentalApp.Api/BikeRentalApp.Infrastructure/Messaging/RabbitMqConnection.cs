@@ -9,10 +9,10 @@ namespace BikeRentalApp.Infrastructure.Messaging {
 
         public RabbitMqConnection(IConfiguration config) {
             var factory = new ConnectionFactory() {
-                HostName = config["RabbitMQ:HostName"] ?? "localhost", 
+                HostName = config["RabbitMQ:HostName"] ?? "localhost",
                 Port = int.Parse(config["RabbitMQ:Port"] ?? "5672"), 
-                UserName = config["RabbitMQ:UserName"] ?? "guest", 
-                Password = config["RabbitMQ:Password"] ?? "guest" 
+                UserName = config["RabbitMQ:UserName"] ?? "admin",
+                Password = config["RabbitMQ:Password"] ?? "admin"
             };
 
             _connection = factory.CreateConnection();

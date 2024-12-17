@@ -8,7 +8,8 @@ namespace BikeRentalApp.Infrastructure.Data {
         private readonly IMongoCollection<MotoCreatedNotification> _collection;
 
         public MongoNotificationRepository(IOptions<MongoSettings> settings) {
-            var client = new MongoClient(settings.Value.ConnectionString);
+            var connectionString = settings.Value.ConnectionString ?? "mongodb://localhost:27017/";
+            var client = new MongoClient(connectionString); 
             var database = client.GetDatabase(settings.Value.DatabaseName);
             _collection = database.GetCollection<MotoCreatedNotification>("Notificacoes");
         }

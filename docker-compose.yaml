@@ -5,19 +5,21 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "5000:5000"
-    depends_on:
-      - postgres
-      - rabbitmq
-      - mongo
+      - "8081:8081"
+      - "8080:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
-      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=appdb;Username=postgres;Password=postgres"
+      ConnectionStrings__PostgreSQL: "Host=postgres;Port=5432;Database=appdb;Username=postgres;Password=postgres"
       RabbitMQ__HostName: "rabbitmq"
-      S3__AccessKey: "<YOUR_ACCESS_KEY>"
-      S3__SecretKey: "<YOUR_SECRET_KEY>"
-      S3__BucketName: "<YOUR_BUCKET_NAME>"
-      S3__Region: "<YOUR_REGION>"
+      RabbitMQ__UserName: "admin"
+      RabbitMQ__Password: "admin"
+      S3__AccessKey: "your-access-key"
+      S3__SecretKey: "your-secret-key"
+      S3__BucketName: "your-bucket-name"
+      S3__Region: "your-region"
+      MongoSettings__ConnectionString: "mongodb://mongo:27017/"
+    depends_on:
+      - rabbitmq
   postgres:
     image: postgres:15
     container_name: postgres
@@ -29,6 +31,7 @@ services:
       POSTGRES_DB: appdb
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -38,16 +41,16 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: admin
+
   mongo:
     image: mongo:6
     container_name: mongo
     ports:
       - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    command: [ "--bind_ip_all", "--noauth" ]
     volumes:
       - mongo_data:/data/db
+
   minio:
     image: minio/minio
     container_name: minio
@@ -55,11 +58,12 @@ services:
       - "9000:9000"
       - "9001:9001"
     environment:
-      MINIO_ROOT_USER: "<YOUR_ACCESS_KEY>"
-      MINIO_ROOT_PASSWORD: "<YOUR_SECRET_KEY>"
+      MINIO_ROOT_USER: "your-access-key"
+      MINIO_ROOT_PASSWORD: "your-secret-key"
     command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data
+
 volumes:
   postgres_data:
   mongo_data:
