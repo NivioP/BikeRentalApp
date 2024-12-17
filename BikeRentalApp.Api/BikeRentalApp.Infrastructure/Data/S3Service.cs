@@ -2,6 +2,7 @@
 using Amazon.S3.Model;
 using BikeRentalApp.Application.Interfaces;
 using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace BikeRentalApp.Infrastructure.Data {
     public class S3Service : IS3Service {
@@ -9,7 +10,11 @@ namespace BikeRentalApp.Infrastructure.Data {
         private readonly string _bucketName;
 
         public S3Service(IConfiguration config) {
-            _s3Client = new AmazonS3Client(config["AWS:AccessKeyId"], config["AWS:SecretAccessKey"], Amazon.RegionEndpoint.GetBySystemName(config["AWS:Region"]));
+            _s3Client = new AmazonS3Client(
+                config["AWS:AccessKeyId"],
+                config["AWS:SecretAccessKey"],
+                Amazon.RegionEndpoint.GetBySystemName(config["AWS:Region"])
+            );
             _bucketName = config["AWS:BucketName"];
         }
 
@@ -32,5 +37,4 @@ namespace BikeRentalApp.Infrastructure.Data {
             return Path.GetExtension(fileName).TrimStart('.').ToLower(); // Ex.: "png", "bmp"
         }
     }
-
 }

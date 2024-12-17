@@ -1,4 +1,3 @@
-
 using BikeRentalApp.Application.Interfaces;
 using BikeRentalApp.Application.Services;
 using BikeRentalApp.Domain.Interfaces;
@@ -13,7 +12,6 @@ namespace BikeRentalAPI {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
             builder.Services.AddControllers();
 
             // Configure Swagger/OpenAPI
@@ -33,7 +31,10 @@ namespace BikeRentalAPI {
             builder.Services.AddScoped<ILocacaoService, LocacaoService>();
 
             // Configure messaging system
-            builder.Services.AddSingleton<RabbitMqConnection>();
+            builder.Services.AddSingleton<RabbitMqConnection>(sp => {
+                var config = sp.GetRequiredService<IConfiguration>();
+                return new RabbitMqConnection(config);
+            });
             builder.Services.AddSingleton<EventPublisher>();
             builder.Services.AddSingleton<IEventPublisher, RabbitMqEventPublisher>();
 
@@ -41,9 +42,11 @@ namespace BikeRentalAPI {
             builder.Services.Configure<MongoSettings>(builder.Configuration.GetSection("MongoSettings"));
             builder.Services.AddScoped<IMongoNotificationRepository, MongoNotificationRepository>();
 
-            // Configure Amazon s3settings
-            builder.Services.AddScoped<IS3Service, S3Service>();
-
+            // Configure Amazon S3 settings
+            builder.Services.AddScoped<IS3Service, S3Service>(sp => {
+                var config = sp.GetRequiredService<IConfiguration>();
+                return new S3Service(config);
+            });
 
             // Add hosted service for notification consumer
             builder.Services.AddHostedService<NotificationConsumer>();
