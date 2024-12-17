@@ -5,7 +5,7 @@ namespace BikeRentalApp.Application.Interfaces {
         Task<MotoDto> CreateAsync(MotoCreateDto createDto);
         Task<IEnumerable<MotoDto>> GetAllAsync();
         Task<MotoDto> GetByIdAsync(string id);
-        Task UpdateAsync(string id, MotoUpdatePlacaDto updateDto);
+        Task UpdatePlacaAsync(string id, MotoUpdatePlacaDto updateDto);
         Task DeleteAsync(string id);
     }
 }

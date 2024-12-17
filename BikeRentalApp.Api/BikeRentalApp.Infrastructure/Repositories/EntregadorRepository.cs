@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BikeRentalApp.Infrastructure.Repositories {
     public class EntregadorRepository : IEntregadorRepository {
+
         private readonly AppDbContext _context;
 
         public EntregadorRepository(AppDbContext context) {

@@ -4,7 +4,7 @@ using BikeRentalApp.Domain.Entities;
 using BikeRentalApp.Domain.Interfaces;
 
 namespace BikeRentalApp.Application.Services {
-    public class EntregadorService : IEntregadorService{
+    public class EntregadorService : IEntregadorService {
         private readonly IEntregadorRepository _entregadorRepository;
 
         public EntregadorService(IEntregadorRepository entregadorRepository) {

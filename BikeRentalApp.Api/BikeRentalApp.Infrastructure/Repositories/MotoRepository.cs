@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BikeRentalApp.Infrastructure.Repositories {
     public class MotoRepository : IMotoRepository {
+
         private readonly AppDbContext _context;
 
         public MotoRepository(AppDbContext context) {
@@ -38,7 +39,7 @@ namespace BikeRentalApp.Infrastructure.Repositories {
         }
         public async Task<bool> PlacaExistsAsync(string placa) {
             return await _context.Motos
-                .AnyAsync(m => m.Placa == placa );
+                .AnyAsync(m => m.Placa == placa);
         }
     }
 }

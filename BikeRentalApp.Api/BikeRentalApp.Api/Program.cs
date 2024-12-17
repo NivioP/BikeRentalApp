@@ -29,6 +29,8 @@ namespace BikeRentalAPI {
             builder.Services.AddScoped<IMotoService, MotoService>();
             builder.Services.AddScoped<IEntregadorRepository, EntregadorRepository>();
             builder.Services.AddScoped<IEntregadorService, EntregadorService>();
+            builder.Services.AddScoped<ILocacaoRepository, LocacaoRepository>();
+            builder.Services.AddScoped<ILocacaoService, LocacaoService>();
 
             // Configure messaging system
             builder.Services.AddSingleton<RabbitMqConnection>();

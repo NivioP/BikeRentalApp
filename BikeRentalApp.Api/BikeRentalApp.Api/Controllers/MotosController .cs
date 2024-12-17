@@ -47,7 +47,7 @@ namespace BikeRentalApp.Api.Controllers {
         [HttpPut("{id}/placa")]
         public async Task<IActionResult> Update(string id, [FromBody] MotoUpdatePlacaDto updateDto) {
             try {
-                await _motoService.UpdateAsync(id, updateDto);
+                await _motoService.UpdatePlacaAsync(id, updateDto);
                 return Ok(new { mensagem = "Placa modificada com sucesso" });
             }
             catch(Exception) {

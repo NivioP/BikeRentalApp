@@ -73,7 +73,7 @@ namespace BikeRentalApp.Application.Services {
             };
         }
 
-        public async Task UpdateAsync(string id, MotoUpdatePlacaDto updateDto) {
+        public async Task UpdatePlacaAsync(string id, MotoUpdatePlacaDto updateDto) {
             var moto = await _motoRepository.GetByIdAsync(id);
             if (moto == null) {
                 throw new Exception("Moto not found.");
